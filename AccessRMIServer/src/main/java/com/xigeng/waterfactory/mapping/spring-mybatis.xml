@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+    <!-- 自动扫描 -->
+    <context:component-scan base-package="com.xigeng.waterfactory.dao" />
+    <context:component-scan base-package="com.xigeng.waterfactory.service" />
+
+    <bean id="serviceExporter" class="org.springframework.remoting.rmi.RmiServiceExporter">
+        <property name="serviceName" value="StudentService" />
+        <property name="service" ref="studentservice" />
+        <property name="serviceInterface" value="com.xigeng.waterfactory.service.IStudentService" />
+        <property name="registryPort" value="8080" />
+        <property name="servicePort" value="8088" />
+    </bean>
+    <bean id="studentservice" class="com.xigeng.waterfactory.service.StudentServiceImpl" />
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+        destroy-method="close">
+        <!--<property name="driverClassName" value="sun.jdbc.odbc.JdbcOdbcDriver" />-->
+        <!--<property name="url" value="jdbc:odbc:DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=\\192.168.1.109\accessdb\Database1.accdb" />-->
+        <property name="driverClassName" value="com.hxtt.sql.access.AccessDriver" />
+        <property name="url" value="jdbc:access:/d:/accessdb/Database1.accdb" />
+
+        <property name="username" value="" />
+        <property name="password" value="" />
+        <!-- 初始化连接大小 -->  
+        <property name="initialSize" value="20"/>
+        <!-- 连接池最大数量 -->  
+        <property name="maxActive" value="150"/>
+        <!-- 连接池最大空闲 -->  
+        <property name="maxIdle" value="20"/>
+        <!-- 连接池最小空闲 -->  
+        <property name="minIdle" value="5"/>
+        <!-- 获取连接最大等待时间 -->  
+        <property name="maxWait" value="60000"/>
+    </bean>
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <!-- 自动扫描mapping.xml文件 -->
+        <property name="mapperLocations" value="classpath:com/xigeng/waterfactory/mapping/IStudentDao.xml"/>
+    </bean>
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
+        <property name="basePackage" value="com.xigeng.waterfactory.dao" />
+    </bean>
+    <bean id="transactionManager"  
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+        <property name="dataSource" ref="dataSource" />  
+    </bean>
+</beans>  

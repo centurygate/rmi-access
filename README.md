@@ -1,0 +1,1 @@
+通过java rmi 远程反问access数据库，其中用到了第三方库Access_JDB30，构建工具用了maven，服务端在Intellij Idea下开发，客户端在Eclipse下开发
